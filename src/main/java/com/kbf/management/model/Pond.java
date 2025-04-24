@@ -1,8 +1,12 @@
 package com.kbf.management.model;
 
+
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,18 +18,23 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "pond")
+@Table(name = "ponds")
 public class Pond {
-	
-	@Id @GeneratedValue
-    private Long id;
-    private String name;
+    @Id @GeneratedValue
+    private Long pondId;
+    private String pondName;
     private String species;
-    private Double capacity;
+    private double capacity;
     private double waterPH;
     private double temperature;
     private boolean isActive;
     private int fishInStock;
     
-
+   // @JsonIgnore
+	  @OneToMany(mappedBy = "pond")
+	  private List<WaterAnalysis> waterAnalysis;
+	  
+	// @JsonIgnore
+		  @OneToMany(mappedBy = "pond")
+		  private List<WaterTreatment> waterTreatment;
 }

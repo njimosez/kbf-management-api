@@ -1,7 +1,5 @@
 package com.kbf.management.model;
 
-import java.time.LocalDate;
-
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,12 +15,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "nutrients")
+public class NutrientRequirement {
     @Id @GeneratedValue
-    private Long transactonId;
-    private LocalDate date;
-    private String description;
-    private double amount;
-    private TransactionType type; // INCOME or EXPENSE
+    private Long id;
+    private String name;
+    private double minLevel;
+    private double maxLevel;
+    
+    
 }

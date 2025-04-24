@@ -1,8 +1,6 @@
 package com.kbf.management.model;
 
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,20 +11,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Map;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "crops")
-public class Crop {
+@Table(name = "ingredients")
+public class Ingredient {
     @Id @GeneratedValue
-    private Long cropId;
+    private Long id;
     private String name;
-    private String fieldName;
-    private LocalDate plantingDate;
-    private LocalDate expectedHarvestDate;
-    private double areaSize;
+    private double costPerUnit;
+    private double quantityInKg;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Double> nutrientComposition;
+    private LocalDate expiryDate;
+    private ProvenderType type;
+    
+    
+    
 }
