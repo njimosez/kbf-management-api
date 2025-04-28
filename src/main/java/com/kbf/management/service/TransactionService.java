@@ -11,18 +11,36 @@ import com.kbf.management.model.Transaction;
 import com.kbf.management.repository.TransactionRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionRepository repository;
 
     public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+        return repository.findAll();
     }
 
     public Transaction saveTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+        return repository.save(transaction);
+    }
+    
+    public Optional<Transaction> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    public Transaction save(Transaction obj) {
+        return repository.save(obj);
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+    
+    public List<Transaction> getTransactionsFromLastMonths(int months) {
+        String interval = months + " months"; // ✅ create valid interval string
+        return repository.findTransactionsFromInterval(interval);
     }
 }

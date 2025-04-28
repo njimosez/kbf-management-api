@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.kbf.management.model.FeedComposition;
 
-public interface FeedCompositionRespository extends JpaRepository<FeedComposition, Long> {
+public interface FeedCompositionRepository extends JpaRepository<FeedComposition, Long> {
 
 }

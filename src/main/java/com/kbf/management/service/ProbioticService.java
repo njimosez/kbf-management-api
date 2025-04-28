@@ -4,31 +4,27 @@ package com.kbf.management.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kbf.management.model.Pond;
-import com.kbf.management.repository.PondRepository;
+import com.kbf.management.model.Probiotic;
+import com.kbf.management.repository.ProbioticRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PondService {
+public class ProbioticService {
 
     @Autowired
-    private PondRepository repository;
+    private ProbioticRepository repository;
 
-    public List<Pond> getAllPonds() {
+    public List<Probiotic> getAll() {
         return repository.findAll();
     }
 
-    public Pond savePond(Pond pond) {
-        return repository.save(pond);
-    }
-    
-    public Optional<Pond> getById(Long id) {
+    public Optional<Probiotic> getById(Long id) {
         return repository.findById(id);
     }
 
-    public Pond save(Pond obj) {
+    public Probiotic save(Probiotic obj) {
         return repository.save(obj);
     }
 

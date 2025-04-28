@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.kbf.management.model.WaterAnalysis;
 
-public interface WaterAnalysisRespository extends JpaRepository<WaterAnalysis, Long> {
+public interface WaterAnalysisRepository extends JpaRepository<WaterAnalysis, Long> {
 
 }

@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.kbf.management.model.AnimalStock;
 
-public interface AnimalStockRespository extends JpaRepository<AnimalStock, Long> {
+public interface AnimalStockRepository extends JpaRepository<AnimalStock, Long> {
 
 }

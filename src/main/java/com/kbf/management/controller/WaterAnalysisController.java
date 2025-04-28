@@ -11,45 +11,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.kbf.management.model.Pond;
-import com.kbf.management.service.PondService;
+import com.kbf.management.model.WaterAnalysis;
+import com.kbf.management.service.WaterAnalysisService;
 
 import java.util.List;
 
-@Tag(name = "Pond API")
+@Tag(name = "WaterAnalysis API")
 @RestController
-@RequestMapping("/api/ponds")
-public class PondController {
+@RequestMapping("/kbf/water-analysis")
+public class WaterAnalysisController {
 
     @Autowired
-    private PondService service;
+    private WaterAnalysisService service;
 
     @Operation(summary = "Get all records")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = Pond.class))),
+        @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = WaterAnalysis.class))),
         @ApiResponse(responseCode = "500", description = "Error")
     })
     @GetMapping
-    public ResponseEntity<List<Pond>> getAll() {
-        return ResponseEntity.ok(service.getAllPonds());
+    public ResponseEntity<List<WaterAnalysis>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @Operation(summary = "Get by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found", content = @Content(schema = @Schema(implementation = Pond.class))),
+        @ApiResponse(responseCode = "200", description = "Found", content = @Content(schema = @Schema(implementation = WaterAnalysis.class))),
         @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Pond> getById(@PathVariable Long id) {
+    public ResponseEntity<WaterAnalysis> getById(@PathVariable Long id) {
         return service.getById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Create")
-    @ApiResponse(responseCode = "200", description = "Created", content = @Content(schema = @Schema(implementation = Pond.class)))
+    @ApiResponse(responseCode = "200", description = "Created", content = @Content(schema = @Schema(implementation = WaterAnalysis.class)))
     @PostMapping
-    public ResponseEntity<Pond> create(@RequestBody Pond obj) {
+    public ResponseEntity<WaterAnalysis> create(@RequestBody WaterAnalysis obj) {
         return ResponseEntity.ok(service.save(obj));
     }
 

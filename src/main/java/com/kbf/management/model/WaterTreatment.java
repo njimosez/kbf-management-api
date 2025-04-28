@@ -44,6 +44,6 @@ public class WaterTreatment {
 		private Pond pond;
 	 
 	@OneToMany(mappedBy = "waterTreatment",fetch = FetchType.LAZY)
-	private List<Probiotics> probiotics;
+	private List<Probiotic> probiotics;
 	
 }

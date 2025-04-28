@@ -1,60 +1,62 @@
 package com.kbf.management.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.kbf.management.model.Crop;
 import com.kbf.management.service.CropService;
 
 import java.util.List;
 
+@Tag(name = "Crop API")
 @RestController
 @RequestMapping("/api/crops")
 public class CropController {
 
-
     @Autowired
-    private CropService cropService;
+    private CropService service;
 
-    @Operation(summary = "Get all crops")
+    @Operation(summary = "Get all records")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = Crop.class))),
+        @ApiResponse(responseCode = "500", description = "Error")
+    })
     @GetMapping
-    public ResponseEntity<List<Crop>> getAllCrops() {
-        return ResponseEntity.ok(cropService.getAllCrops());
+    public ResponseEntity<List<Crop>> getAll() {
+        return ResponseEntity.ok(service.getAllCrops());
     }
 
-    @Operation(summary = "Get crop by ID")
+    @Operation(summary = "Get by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found the crop"),
-        @ApiResponse(responseCode = "404", description = "Crop not found")
+        @ApiResponse(responseCode = "200", description = "Found", content = @Content(schema = @Schema(implementation = Crop.class))),
+        @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Crop> getCropById(@PathVariable Long id) {
-        Crop crop = cropService.getCropById(id);
-        return crop != null ? ResponseEntity.ok(crop) : ResponseEntity.notFound().build();
+    public ResponseEntity<Crop> getById(@PathVariable Long id) {
+        return service.getById(id)        		
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Create a new crop")
+    @Operation(summary = "Create")
+    @ApiResponse(responseCode = "200", description = "Created", content = @Content(schema = @Schema(implementation = Crop.class)))
     @PostMapping
-    public ResponseEntity<Crop> createCrop(@RequestBody Crop crop) {
-        return ResponseEntity.ok(cropService.saveCrop(crop));
+    public ResponseEntity<Crop> create(@RequestBody Crop obj) {
+        return ResponseEntity.ok(service.saveCrop(obj));
     }
 
-    @Operation(summary = "Update crop by ID")
-    @PutMapping("/{id}")
-    public ResponseEntity<Crop> updateCrop(@PathVariable Long id, @RequestBody Crop crop) {
-        Crop updated = cropService.updateCrop(id, crop);
-        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
-    }
-
-    @Operation(summary = "Delete crop by ID")
+    @Operation(summary = "Delete")
+    @ApiResponse(responseCode = "204", description = "Deleted")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCrop(@PathVariable Long id) {
-        cropService.deleteCrop(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.deleteCrop(id);
         return ResponseEntity.noContent().build();
     }
 }
-

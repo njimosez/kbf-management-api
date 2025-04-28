@@ -4,6 +4,8 @@ package com.kbf.management.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,18 +45,29 @@ public class FishStock {
 	private int fishPondId;	
 	private String fishPondName;
 	
-	 @ManyToOne(fetch = FetchType.LAZY)
+	 @ManyToOne(fetch = FetchType.EAGER)
 	//@JsonIgnore
 	@JoinColumn(name = "pondId")
 	private Pond pond;
 	
-	 @OneToMany(mappedBy = "fishStock",fetch = FetchType.LAZY)
+	// @JsonIgnore
+	 @OneToMany(mappedBy = "fishStock",fetch = FetchType.EAGER)
 	  private List<Sample> sample;
-	 
+	 @JsonIgnore
 	@OneToMany(mappedBy = "fishStock",fetch = FetchType.LAZY)
 	private List<Provender> provender;
-	
+	 @JsonIgnore
 	@OneToMany(mappedBy = "fishStock",fetch = FetchType.LAZY)
 	private List<Veterinary> vetcare;
+	 
+	  @JsonIgnore
+	  @OneToMany(mappedBy = "fishStock",fetch = FetchType.LAZY)
+	  private List<FeedUsage> feed;
+	 // Could use the dropdown from fish,crops and animal by calling them also or make a dto for 
+	  
+	  @ManyToOne(fetch = FetchType.LAZY)
+		@JsonIgnore
+		@JoinColumn(name = "transactonId")
+		private Transaction transaction;
 	
 }

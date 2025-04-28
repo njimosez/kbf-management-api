@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "probiotics")
-public class Probiotics {
+public class Probiotic {
     @Id @GeneratedValue
     private Long probioticId;
     private String name;              // e.g., Bacillus subtilis, Lactobacillus
@@ -35,7 +35,7 @@ public class Probiotics {
     @OneToMany
     private List<Ingredient> ingredients;
     @OneToMany
-    private List<NutrientRequirement> nutrientRequirements;
+    private List<Nutrient> nutrientRequirements;
     private LocalDate expiryDate;
     private String usageInstructions;
     

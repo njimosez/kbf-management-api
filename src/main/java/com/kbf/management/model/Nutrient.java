@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "nutrients")
-public class NutrientRequirement {
+public class Nutrient {
     @Id @GeneratedValue
     private Long id;
     private String name;

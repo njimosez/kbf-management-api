@@ -3,6 +3,8 @@ package com.kbf.management.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -30,11 +32,11 @@ public class Pond {
     private boolean isActive;
     private int fishInStock;
     
-   // @JsonIgnore
+    @JsonIgnore
 	  @OneToMany(mappedBy = "pond")
 	  private List<WaterAnalysis> waterAnalysis;
 	  
-	// @JsonIgnore
+	 @JsonIgnore
 		  @OneToMany(mappedBy = "pond")
 		  private List<WaterTreatment> waterTreatment;
 }

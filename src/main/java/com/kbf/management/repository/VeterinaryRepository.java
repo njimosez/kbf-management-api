@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.kbf.management.model.Veterinary;
 
-public interface VeterinaryRespository extends JpaRepository<Veterinary, Long> {
+public interface VeterinaryRepository extends JpaRepository<Veterinary, Long> {
 
 }

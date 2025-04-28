@@ -8,18 +8,30 @@ import com.kbf.management.model.Provender;
 import com.kbf.management.repository.ProvenderRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProvenderService {
 
     @Autowired
-    private ProvenderRepository provenderRepository;
+    private ProvenderRepository repository;
 
     public List<Provender> getAllProvenders() {
-        return provenderRepository.findAll();
+        return repository.findAll();
     }
 
     public Provender saveProvender(Provender provender) {
-        return provenderRepository.save(provender);
+        return repository.save(provender);
+    }
+    public Optional<Provender> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    public Provender save(Provender obj) {
+        return repository.save(obj);
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }

@@ -1,12 +1,13 @@
 package com.kbf.management.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kbf.management.model.Crop;
 import com.kbf.management.repository.CropRepository;
-
-import java.util.List;
 
 @Service
 public class CropService {
@@ -20,6 +21,10 @@ public class CropService {
 
     public Crop getCropById(Long id) {
         return cropRepository.findById(id).orElse(null);
+    }
+    
+    public Optional<Crop> getById(Long id) {
+        return cropRepository.findById(id);
     }
 
     public Crop saveCrop(Crop crop) {

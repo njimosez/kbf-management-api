@@ -4,6 +4,8 @@ package com.kbf.management.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,14 +44,19 @@ public class AnimalStock {
 	private boolean isSoldOut;
 	
 	
-	 @OneToMany(mappedBy = "animalStock",fetch = FetchType.LAZY)
+	 @OneToMany(mappedBy = "animalStock",fetch = FetchType.EAGER)
 	 private List<Sample> sample;
 	 
+	 @JsonIgnore
 	@OneToMany(mappedBy = "animalStock",fetch = FetchType.LAZY)
 	private List<Provender> provender;
-	
+	 @JsonIgnore
 	@OneToMany(mappedBy = "animalStock",fetch = FetchType.LAZY)
 	private List<Veterinary> vetcare;
+	
+	 @JsonIgnore
+	  @OneToMany(mappedBy = "animalStock",fetch = FetchType.LAZY)
+	  private List<FeedUsage> feed;
 	
 	
 	
