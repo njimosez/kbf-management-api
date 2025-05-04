@@ -1,62 +1,88 @@
 package com.kbf.management.controller;
 
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kbf.management.dto.FishStockDto;
+import com.kbf.management.service.FishStockService;
+
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-import com.kbf.management.model.FishStock;
-import com.kbf.management.service.FishStockService;
 
-import java.util.List;
 
 @Tag(name = "FishStock API")
 @RestController
 @RequestMapping("/kbf/fishstocks")
+@Validated
+@RequiredArgsConstructor
 public class FishStockController {
 
-    @Autowired
-    private FishStockService service;
+	private final FishStockService fishStockService;
 
-    @Operation(summary = "Get all records")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = FishStock.class))),
-        @ApiResponse(responseCode = "500", description = "Error")
-    })
+    @Operation(summary = "Get all fish stock records")
+    @ApiResponse(responseCode = "200", description = "Fish stock list retrieved successfully")
     @GetMapping
-    public ResponseEntity<List<FishStock>> getAll() {
-        return ResponseEntity.ok(service.getFishStocks());
+    public ResponseEntity<List<FishStockDto>> getAll() {
+        return ResponseEntity.ok(fishStockService.getAll());
     }
 
-    @Operation(summary = "Get by ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found", content = @Content(schema = @Schema(implementation = FishStock.class))),
-        @ApiResponse(responseCode = "404", description = "Not found")
+    @Operation(summary = "Get a fish stock record by its ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Fish stock retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Fish stock not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<FishStock> getById(@PathVariable Long id) {
-        return service.getById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<FishStockDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(fishStockService.getById(id));
     }
 
-    @Operation(summary = "Create")
-    @ApiResponse(responseCode = "200", description = "Created", content = @Content(schema = @Schema(implementation = FishStock.class)))
+    @Operation(summary = "Create a new fish stock record")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Fish stock created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping
-    public ResponseEntity<FishStock> create(@RequestBody FishStock obj) {
-        return ResponseEntity.ok(service.save(obj));
+    public ResponseEntity<FishStockDto> create(@Valid @RequestBody FishStockDto dto) {
+        return ResponseEntity.ok(fishStockService.create(dto));
     }
 
-    @Operation(summary = "Delete")
-    @ApiResponse(responseCode = "204", description = "Deleted")
+    @Operation(summary = "Update an existing fish stock record")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Fish stock updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "404", description = "Fish stock not found")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<FishStockDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody FishStockDto dto) {
+        return ResponseEntity.ok(fishStockService.update(id, dto));
+    }
+
+    @Operation(summary = "Delete a fish stock record")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Fish stock deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Fish stock not found")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+        fishStockService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

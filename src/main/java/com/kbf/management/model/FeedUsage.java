@@ -28,9 +28,19 @@ import lombok.NoArgsConstructor;
 public class FeedUsage {
     @Id @GeneratedValue
     private Long feedingId;
+    
+    /** Type of feed used (e.g., Starter, Grower) */
+    @Column(nullable = false)
     private String feedType;
-    private LocalDate feedingDate;
-	private double qtyFed; // in kg
+    
+    /** Date when feed was applied */
+    @Column(nullable = false)
+    private LocalDate usageDate;
+    
+    /** Quantity of feed used in grams or kg */
+    @Column(nullable = false)
+    private double quantityUsed;
+    
 	@Column(columnDefinition = "integer default 0")
 	private double avgFishSize;
 	@Column(columnDefinition = "integer default 0")
@@ -39,8 +49,10 @@ public class FeedUsage {
 	private int timesFed;
 	@Column(columnDefinition = "integer default 0")
 	private int fishInPond;
+	 /** Number of fish removed from the pond on this day */
 	@Column(columnDefinition = "integer default 0")
 	private int reduced;
+	 /** Number of fish mortalities observed during feeding */
 	@Column(columnDefinition = "integer default 0")
 	private int mortality;
 	
@@ -58,10 +70,7 @@ public class FeedUsage {
 	@JoinColumn(name = "provenderId")
 	private Provender provender;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
-	@JoinColumn(name = "animalStockId")
-	private AnimalStock animalStock;
+	
 	
 	 
 	

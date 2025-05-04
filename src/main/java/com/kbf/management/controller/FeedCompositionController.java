@@ -1,60 +1,82 @@
 package com.kbf.management.controller;
 
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kbf.management.dto.FeedCompositionDto;
+import com.kbf.management.service.FeedCompositionService;
+
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.kbf.management.model.FeedComposition;
-import com.kbf.management.service.FeedCompositionService;
-
-import java.util.List;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "FeedComposition API")
 @RestController
-@RequestMapping("/api/feedcompositions")
+@RequestMapping("/kbf/feedcompositions")
+@Validated
+@RequiredArgsConstructor
 public class FeedCompositionController {
 
-    @Autowired
-    private FeedCompositionService service;
+	private final FeedCompositionService service;
 
-    @Operation(summary = "Get all records")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Success", content = @Content(schema = @Schema(implementation = FeedComposition.class))),
-        @ApiResponse(responseCode = "500", description = "Error")
-    })
+    @Operation(summary = "Retrieve all feed composition entries")
+    @ApiResponse(responseCode = "200", description = "List of compositions retrieved")
     @GetMapping
-    public ResponseEntity<List<FeedComposition>> getAll() {
-        return ResponseEntity.ok(service.getFeedCompositions());
+    public ResponseEntity<List<FeedCompositionDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
-    @Operation(summary = "Get by ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found", content = @Content(schema = @Schema(implementation = FeedComposition.class))),
-        @ApiResponse(responseCode = "404", description = "Not found")
+    @Operation(summary = "Get a feed composition entry by ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Composition retrieved"),
+        @ApiResponse(responseCode = "404", description = "Composition not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<FeedComposition> getById(@PathVariable Long id) {
-        return service.getById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<FeedCompositionDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
-    @Operation(summary = "Create")
-    @ApiResponse(responseCode = "200", description = "Created", content = @Content(schema = @Schema(implementation = FeedComposition.class)))
+    @Operation(summary = "Create a new feed composition entry")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Composition created"),
+        @ApiResponse(responseCode = "400", description = "Invalid input or provender/ingredient not found")
+    })
     @PostMapping
-    public ResponseEntity<FeedComposition> create(@RequestBody FeedComposition obj) {
-        return ResponseEntity.ok(service.save(obj));
+    public ResponseEntity<FeedCompositionDto> create(@Valid @RequestBody FeedCompositionDto dto) {
+        return ResponseEntity.ok(service.create(dto));
     }
 
-    @Operation(summary = "Delete")
-    @ApiResponse(responseCode = "204", description = "Deleted")
+    @Operation(summary = "Update an existing feed composition entry")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Composition updated"),
+        @ApiResponse(responseCode = "404", description = "Composition not found")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<FeedCompositionDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody FeedCompositionDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
+    }
+
+    @Operation(summary = "Delete a feed composition entry")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Composition deleted"),
+        @ApiResponse(responseCode = "404", description = "Composition not found")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

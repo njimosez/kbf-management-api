@@ -1,38 +1,80 @@
 package com.kbf.management.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
+import com.kbf.management.dto.PondDto;
 import com.kbf.management.model.Pond;
 import com.kbf.management.repository.PondRepository;
 
-import java.util.List;
-import java.util.Optional;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PondService {
 
-    @Autowired
-    private PondRepository repository;
+	private final PondRepository pondRepo;
 
-    public List<Pond> getAllPonds() {
-        return repository.findAll();
+    public List<PondDto> getAll() {
+        return pondRepo.findAll().stream()
+            .map(this::toDto)
+            .collect(Collectors.toList());
     }
 
-    public Pond savePond(Pond pond) {
-        return repository.save(pond);
-    }
-    
-    public Optional<Pond> getById(Long id) {
-        return repository.findById(id);
+    public PondDto getById(Long id) {
+        Pond pond = pondRepo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pond not found: " + id));
+        return toDto(pond);
     }
 
-    public Pond save(Pond obj) {
-        return repository.save(obj);
+    @Transactional
+    public PondDto create(PondDto dto) {
+        Pond pond = toEntity(dto);
+        Pond saved = pondRepo.save(pond);
+        return toDto(saved);
     }
 
+    @Transactional
+    public PondDto update(Long id, PondDto dto) {
+        Pond pond = pondRepo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pond not found: " + id));
+        pond.setName(dto.getName());
+        pond.setSize(dto.getSize());
+        pond.setLocation(dto.getLocation());
+        pond.setStatus(dto.getStatus());
+        pond.setFishCapacity(dto.getFishCapacity());
+        Pond updated = pondRepo.save(pond);
+        return toDto(updated);
+    }
+
+    @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+        Pond pond = pondRepo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pond not found: " + id));
+        pondRepo.delete(pond);
+    }
+
+    private PondDto toDto(Pond pond) {
+        PondDto dto = new PondDto();
+        dto.setName(pond.getName());
+        dto.setSize(pond.getSize());
+        dto.setLocation(pond.getLocation());
+        dto.setStatus(pond.getStatus());
+        dto.setFishCapacity(pond.getFishCapacity());
+        return dto;
+    }
+
+    private Pond toEntity(PondDto dto) {
+        Pond pond = new Pond();
+        pond.setName(dto.getName());
+        pond.setSize(dto.getSize());
+        pond.setLocation(dto.getLocation());
+        pond.setStatus(dto.getStatus());
+        pond.setFishCapacity(dto.getFishCapacity());
+        return pond;
     }
 }
