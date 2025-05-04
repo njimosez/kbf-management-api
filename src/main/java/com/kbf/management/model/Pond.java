@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -24,19 +25,35 @@ import lombok.NoArgsConstructor;
 public class Pond {
     @Id @GeneratedValue
     private Long pondId;
-    private String pondName;
-    private String species;
-    private double capacity;
-    private double waterPH;
-    private double temperature;
-    private boolean isActive;
-    private int fishInStock;
+    
+    /** Name of the pond */
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    /** Physical size in square meters */
+    @Column(nullable = false)
+    private double size;
+
+    /** Geographic or facility location description */
+    private String location;
+
+    /** Current operational status (e.g., Active, Drained) */
+    private String status;
+
+    /** Maximum fish capacity */
+    private int fishCapacity;
+
     
     @JsonIgnore
-	  @OneToMany(mappedBy = "pond")
-	  private List<WaterAnalysis> waterAnalysis;
-	  
-	 @JsonIgnore
-		  @OneToMany(mappedBy = "pond")
-		  private List<WaterTreatment> waterTreatment;
+    /** Fish stock batches residing in this pond */
+    @OneToMany(mappedBy = "pond")
+    private List<FishStock> fishStocks;
+
+    /** Water analysis records for this pond */
+    @OneToMany(mappedBy = "pond")
+    private List<WaterAnalysis> waterAnalyses;
+
+    /** Water treatment events for this pond */
+    @OneToMany(mappedBy = "pond")
+    private List<WaterTreatment> waterTreatments;
 }

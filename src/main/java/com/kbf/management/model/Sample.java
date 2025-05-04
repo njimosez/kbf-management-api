@@ -3,6 +3,7 @@ package com.kbf.management.model;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -23,21 +24,36 @@ import lombok.NoArgsConstructor;
 public class Sample {
     @Id @GeneratedValue
     private Long sampleId;
+    
+    /** Species sampled */
+    @Column(nullable = false)
     private String specy;
-	private LocalDate sampleDate;
-	private int sampleQty;
-	private double totalSampleWeight;
-	private double avgFishSize;
-	private double targetSize;
+
+    /** Date when the sampling occurred */
+    @Column(nullable = false)
+    private LocalDate sampleDate;
+
+    /** Number of fish sampled */
+    @Column(nullable = false)
+    private int sampleQty;
+
+    /** Total weight of sampled fish (grams) */
+    @Column(nullable = false)
+    private double totalSampleWeight;
+
+    /** Average size of sampled fish (grams) */
+    @Column(nullable = false)
+    private double avgFishSize;
+
+    /** Target size for management (grams) */
+    @Column(nullable = false)
+    private double targetSize;
    
 	@ManyToOne
 	  //@JsonIgnore
 	  @JoinColumn(name = "fishStockId")
 	  private FishStock fishStock;
 	
-	@ManyToOne
-	  //@JsonIgnore
-	  @JoinColumn(name = "animalStockId")
-	  private AnimalStock animalStock;
+	
 	 
 }

@@ -1,6 +1,12 @@
 package com.kbf.management.model;
 
 
+import java.time.LocalDate;
+import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +20,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Entity
 @Data
 @Builder
@@ -25,23 +28,67 @@ import java.util.List;
 @Table(name = "probiotics")
 public class Probiotic {
     @Id @GeneratedValue
-    private Long probioticId;
-    private String name;              // e.g., Bacillus subtilis, Lactobacillus
-    private String type;              // e.g., bacterial, fungal, mixed
-    private String supplier;
-    private double concentration;     // e.g., CFU/ml
-    private String unit;              // e.g., CFU/g, CFU/ml
+    private Long probioticId;  
+    
+    /** Date of probiotic application */
+    @Column(nullable = false)
+    private LocalDate applicationDate;
+
+    /** Probiotic product name , example = "Bacillus subtilis" */
+    @Column(nullable = false)
+    private String probioticName;
+
+    /** Purpose of application */
+    private String purpose;
+
+    /** Method of application (e.g., in feed, in water) */
+    private String method;
+
+    /** Quantity applied */
+    @Column(nullable = false)
+    private double quantity;
+
+    /** Unit of quantity (e.g., g, kg) */
+    @Column(nullable = false)
+    private String unit;
+
+    /** Concentration of probiotic (e.g., CFU/ml) */
+    private String concentration;
+
+    /** Manufacturing date of the probiotic product */
     private LocalDate manufactureDate;
-    @OneToMany
-    private List<Ingredient> ingredients;
-    @OneToMany
-    private List<Nutrient> nutrientRequirements;
+
+    /** Expiry date of the probiotic product */
     private LocalDate expiryDate;
+
+    /** Usage instructions */
+    @Column(columnDefinition = "TEXT")
     private String usageInstructions;
+
+    /** Remarks or notes */
+    @Column(columnDefinition = "TEXT")
+    private String remarks;
+
+    /** Associated water treatments using this probiotic */
+    @OneToMany(mappedBy = "probioticApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WaterTreatment> waterTreatments;
+
+    /** Financial transactions related to this probiotic purchase */
+    @OneToMany(mappedBy = "probioticApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
     
+    /** Pond to which this probiotic was applied (optional) */
     @ManyToOne(fetch = FetchType.LAZY)
-	//@JsonIgnore
-	@JoinColumn(name = "treatmentId")
-	private WaterTreatment waterTreatment;
-    
+    @JoinColumn(name = "pondId")
+    private Pond pond;
+
+    /** Fish stock batch to which this probiotic was applied (optional) */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishStockId")
+    private FishStock fishStock;
+
+    /** Supplier from whom the probiotic was sourced */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "supplierId", nullable = false)
+    private Supplier supplier;
 }

@@ -1,9 +1,9 @@
 package com.kbf.management.model;
 
-
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,8 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,24 +24,44 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "water_treatments")
 public class WaterTreatment {
-    @Id @GeneratedValue
-    private Long treatmentId;    
-    private LocalDate treatmentDate;
-    private String pondName;
-    private String treatmentType;      // e.g., pH adjustment, oxygenation, chemical disinfectant
-    private String chemicalUsed;       // e.g., Lime, Potassium permanganate
-    private double dosage;             // Amount applied
-    private String dosageUnit;         // e.g., mg/L, g/m³
-    private String appliedBy;          // Technician or staff name
-    private String notes;
+	@Id
+	@GeneratedValue
+	private Long treatmentId;	
+	
+    /** Treatment type (e.g., Chlorine, Lime, Probiotic) */
+    @Column(nullable = false)
+    private String treatmentType;
 
-	
-	 @ManyToOne(fetch = FetchType.LAZY)
-		//@JsonIgnore
-		@JoinColumn(name = "pondId")
-		private Pond pond;
-	 
-	@OneToMany(mappedBy = "waterTreatment",fetch = FetchType.LAZY)
-	private List<Probiotic> probiotics;
-	
+    /** Chemical or substance used */
+    private String chemicalUsed;    
+
+    /** Date of treatment application */
+    @Column(nullable = false)
+    private LocalDate treatmentDate;
+
+    /** Observed effectiveness notes */
+    @Column(columnDefinition = "TEXT")
+    private String effectiveness;
+
+    /** Amount of treatment applied */
+    @Column(nullable = false)
+    private double dosage;
+
+    /** Unit for dosage (e.g., mg/L, g/m³) */
+    @Column(nullable = false)
+    private String dosageUnit;
+
+    /** Technician or staff who applied the treatment */
+    private String appliedBy;
+    
+    /** Pond that received the treatment */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "pondId", nullable = false)
+    private Pond pond;
+    
+    /** Probiotic application associated with this treatment */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "probioticId")
+    private Probiotic probioticApplication;
+
 }

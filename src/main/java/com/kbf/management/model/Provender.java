@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,36 +25,49 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "provender")
-public class Provender implements Serializable{
-    private static final long serialVersionUID = 1L;
-	@Id @GeneratedValue
-    private Long provenderId;
-    private String name;
-    private double quantityInKg;
+public class Provender implements Serializable {
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue
+	private Long provenderId;
+	
+	/** e.g. “Starter Feed”, “Grower Mix” */
+    @Column(nullable = false)
+    private String feedType;
+
+    /** Current stock level (kg) */
+    @Column(nullable = false)
+    private double quantity;
+
+    /** When this batch was last restocked */
+    private LocalDate lastRestocked;
+
+    /** Price per kilogram */
+    private double pricePerKg;
+
+    /** Expiry date of this feed batch */
     private LocalDate expiryDate;
+
+    /** Any special feeding recommendations */
+    @Column(columnDefinition = "TEXT")
     private String feedingNotes;
+
+    /** Who manufactured this feed */
     private String manufacturer;
-    private ProvenderType type;
+	
+	@OneToMany(mappedBy = "provender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedComposition> feedCompositions;
+
+    @OneToMany(mappedBy = "provender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-	//@JsonIgnore
-	@JoinColumn(name = "feedCompId")
-    private FeedComposition feedComposition;
+    @OneToMany(mappedBy = "provender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedUsage> feedUsages;
     
-    @ManyToOne
-	//@JsonIgnore
-	  @JoinColumn(name = "fishStockId")
-	  private FishStock fishStock;
-    
-    @ManyToOne
-   	//@JsonIgnore
-   	  @JoinColumn(name = "animalStockId")
-   	  private AnimalStock animalStock;
-    
-    @JsonIgnore
-	  @OneToMany(mappedBy = "feedingId",fetch = FetchType.LAZY)
-	  private List<FeedUsage> feed;
-    
-   
-    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "supplierId", nullable = false)
+    private Supplier supplier;
+
+
+
 }
