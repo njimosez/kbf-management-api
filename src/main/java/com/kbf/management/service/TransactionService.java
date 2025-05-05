@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.kbf.management.dto.ProvenderDto;
 import com.kbf.management.dto.TransactionDto;
 import com.kbf.management.model.Customer;
 import com.kbf.management.model.FarmEquipment;
@@ -24,6 +25,7 @@ import com.kbf.management.repository.InvestmentRepository;
 import com.kbf.management.repository.PayrollRepository;
 import com.kbf.management.repository.ProbioticRepository;
 import com.kbf.management.repository.ProvenderRepository;
+import com.kbf.management.repository.SupplierRepository;
 import com.kbf.management.repository.TransactionRepository;
 import com.kbf.management.utils.Constants;
 
@@ -42,7 +44,11 @@ public class TransactionService {
 	private final FarmEquipmentRepository equipmentRepo;
 	private final CustomerRepository customerRepo;
 	private final InvestmentRepository investmentRepo;
-
+	private final InvestmentService investmentService;
+	private final ProvenderService provenderService;
+	private final PayrollService payrollService;
+	private final FarmEquipmentService farmEquipmentService;
+	private final ProbioticService probioticService;
 	/**
 	 * Fetch all transactions
 	 */
@@ -113,7 +119,7 @@ public class TransactionService {
 		tx.setAmount(dto.getAmount());
 		tx.setDescription(dto.getDescription());
 		tx.setDate(dto.getDate() != null ? dto.getDate() : LocalDate.now());
-		tx.setTransType(dto.getTransactionType());
+		
 
 		// Clear previous associations
 		// tx.setCatType(null);
@@ -127,13 +133,11 @@ public class TransactionService {
 		// Wire correct association
 		switch (dto.getOperationType()) {
 		case FISH_STOCK -> {
-			// check if fish stock and customer id was passed first
+			// check if fish stock and customer id was passed first . Use for sales 
 			Customer customer = customerRepo.findById(dto.getCustomerId())
 					.orElseThrow(() -> new IllegalArgumentException("Customer not found: " + dto.getCustomerId()));
 			tx.setCustomer(customer);
-
-			
-//            	 
+            	 
 			FishStock stock = fishStockRepo.findById(dto.getFishStockId())
 					.orElseThrow(() -> new IllegalArgumentException("FishStock not found: " + dto.getFishStockId()));
 			stock.setQtySold(stock.getQtySold() + dto.getSoldQty());
@@ -141,59 +145,88 @@ public class TransactionService {
 			stock.setUnitPriceSold(dto.getUnitPrice());
 			stock.setSoldOut(stock.getStockRemaining()<= Constants.ZERO ?true:false);
 			tx.setFishStock(stock);
-
+			tx.setTransType(Constants.INCOME);
 			tx.setCategoryType(Constants.SALES);
 			tx.setReference(dto.getOperationType().toString().toLowerCase().concat(" ").concat(stock.getBatch()));
 			// tx.setDescription(dto.getOperationType().toString());
 			break;
 		}
 		case PROVENDER -> {
-			Provender p = provenderRepo.findById(dto.getProvenderId())
+			// create provender here
+			Provender prov = provenderService.createFromTransaction(dto.getProvenderDto());
+			// check to ensure provender was created and saved. may not be needed
+			Provender p = provenderRepo.findById(prov.getProvenderId())
 					.orElseThrow(() -> new IllegalArgumentException("Provender not found: " + dto.getProvenderId()));
 			tx.setProvender(p);
-			tx.setCategoryType(Constants.OPERATING);
+			tx.setTransType(Constants.EXPENSE);
+			tx.setCategoryType(Constants.PRODUCTION);
 			break;
 		}
 		case PAYROLL -> {
-			Payroll payroll = payrollRepo.findById(dto.getPayrollId())
+			// Create payroll on transaction 
+			Payroll payTransaction = payrollService.createFromTransaction(dto.getPayrollDto());
+			
+			Payroll payroll = payrollRepo.findById(payTransaction.getPayId())
 					.orElseThrow(() -> new IllegalArgumentException("Payroll not found: " + dto.getPayrollId()));
 			tx.setPayroll(payroll);
+			tx.setTransType(Constants.EXPENSE);
 			tx.setCategoryType(Constants.LABOR);
 			break;
 		}
 		case PROBIOTIC -> {
-			Probiotic pa = probioticRepo.findById(dto.getProbioticId()).orElseThrow(
+			
+			Probiotic pbTransaction = probioticService.createFromTransaction(dto.getProbioticDto());
+			
+			Probiotic pa = probioticRepo.findById(pbTransaction.getProbioticId()).orElseThrow(
 					() -> new IllegalArgumentException("ProbioticApplication not found: " + dto.getProbioticId()));
 			tx.setProbiotic(pa);
-			tx.setCategoryType(Constants.OPERATING);
+			tx.setTransType(Constants.EXPENSE);
+			tx.setCategoryType(Constants.PRODUCTION);
 			break;
 		}
 		case FARM_EQUIPMENT -> {
-			FarmEquipment eq = equipmentRepo.findById(dto.getEquipmentId())
-					.orElseThrow(() -> new IllegalArgumentException("Equipment not found: " + dto.getEquipmentId()));
-			tx.setFarmEquipment(eq);
-			// if equipment should be amortized over time or cost more than operating
-			// ceiling then set expense as capital
-			// if transaction is income from investor then set as capital to offset the
-			// expense
+			
+			FarmEquipment eqTransaction = farmEquipmentService.createfromTransaction(dto.getFarmEquipmentDto());
+			tx.setFarmEquipment(eqTransaction);
+			
+			/**
+			 *  if equipment should be amortized over time or cost more than operating
+				 ceiling then set expense as capital
+				 if transaction is income from investor then set as capital to offset the
+			 */
+			String transactionType = eqTransaction.getCost() > 25000 ? Constants.CAPITAL : Constants.EXPENSE;
+			tx.setTransType(transactionType);
+			String category = eqTransaction.getCost() > 25000 ? Constants.CAPITAL : Constants.OPERATING;
+			tx.setCategoryType(category);
+			
+			//
 			// do not include in monthly expense. Should create as CAPITAL
 			break;
 		}
+		/**
+		 * "Costs associated with purchasing equipment, machinery, or buildings that are expected to last for more than one year.
+		 */
 		case INVESTMENT -> {
-			Investment inv = investmentRepo.findById(dto.getInvestmentId())
-					.orElseThrow(() -> new IllegalArgumentException("Investment not found: " + dto.getInvestmentId()));
-			tx.setInvestment(inv);
+			//should be used to inject cash flow for operation ?
+			Investment invTransaction = investmentService.createFromTransaction(dto.getInvestmentDto());
+//			Investment inv = investmentRepo.findById(dto.getInvestmentId())
+//					.orElseThrow(() -> new IllegalArgumentException("Investment not found: " + dto.getInvestmentId()));
+			tx.setInvestment(invTransaction);
+			tx.setTransType(Constants.CAPITAL);
 			tx.setCategoryType(Constants.CAPITAL);
 			break;
 
 		}
-
+        /**
+         * Costs related to running the farm business, such as utilities, repairs, insurance, and taxes.
+         */
 		case OTHER -> {
 			// case other/misc should be all expenses not tracked specifically . e.g
 			// transport, fuel , choco etc..
 			//create a ui page for crud of other expenses
 		    tx.setDescription("[Misc: " + dto.getOperationType() + "] " + tx.getDescription());
-
+		    tx.setTransType(Constants.OPERATING);
+			tx.setCategoryType(Constants.OTHER);
 			tx.setCategoryType(dto.getOperationType().toString());
 			//
 			// tx.setReference(dto.getOperationType().toString().toLowerCase().concat("

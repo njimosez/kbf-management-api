@@ -5,10 +5,8 @@ package com.kbf.management.service;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kbf.management.dto.FeedUsageDto;
@@ -61,38 +59,84 @@ public class FeedUsageService {
 
         FeedUsage usage = new FeedUsage();
         usage.setFeedType(dto.getFeedType());
+        usage.setTimesFed(dto.getTimesFed());
         usage.setQuantityUsed(dto.getQuantityUsed());
         usage.setUsageDate(dto.getUsageDate());
         usage.setMortality(dto.getMortality());
-        usage.setReduced(dto.getReduced());
-        usage.setFishStock(stock);
-        usage.setProvender(prov);
+        usage.setReduced(dto.getReduced());       
+        usage.setAvgFishSize(dto.getAvgFishSize());
+        usage.setFishStock(updateStock(stock,dto));       
+        usage.setProvender(updateProvender(prov,dto));
+        usage.setFishInPond(stock.getStockRemaining());
+        
 
         FeedUsage saved = feedUsageRepo.save(usage);
         return toDto(saved);
     }
-
+     
     /**
+     * Reduce the quantity used from the provender stock
+     * @param prov
+     * @param dto
+     * @return
+     */
+    private Provender updateProvender(Provender prov, FeedUsageDto dto) {
+		prov.setQuantity(prov.getQuantity() - dto.getQuantityUsed());
+		return prov;
+	}
+
+	/**
+     * Fish stock record should be updated upon feeding which is done daily
+     * @param stock
+     * @param dto 
+     * @return
+     */
+    private FishStock updateStock(FishStock stock, FeedUsageDto dto) {
+     
+      stock.setMortality(stock.getMortality() + dto.getMortality());
+      stock.setReduction(stock.getReduction() + dto.getReduced());
+      stock.setStockRemaining(stock.getStockRemaining() - (dto.getMortality() + dto.getReduced()));
+     
+     
+		return stock;
+	}
+
+	/**
      * Update an existing feed usage record.
      */
     @Transactional
     public FeedUsageDto update(Long id, FeedUsageDto dto) {
         FeedUsage usage = feedUsageRepo.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("FeedUsage not found: " + id));
+        FishStock stock = fishStockRepo.findById(dto.getFishStockId())
+                .orElseThrow(() -> new IllegalArgumentException("FishStock not found: " + dto.getFishStockId()));
+        Provender prov = provenderRepo.findById(dto.getProvenderId())
+                .orElseThrow(() -> new IllegalArgumentException("Provender not found: " + dto.getProvenderId()));
 
         usage.setFeedType(dto.getFeedType());
         usage.setQuantityUsed(dto.getQuantityUsed());
+        usage.setTimesFed(dto.getTimesFed());
         usage.setUsageDate(dto.getUsageDate());
         usage.setMortality(dto.getMortality());
-        usage.setReduced(dto.getReduced());
-        // associations not changed to preserve integrity
-
+        usage.setReduced(dto.getReduced());       
+        usage.setAvgFishSize(dto.getAvgFishSize());
+        usage.setFishStock(updateStock(stock,dto));
+        prov.setQuantity(ProvQtyOnUpdate(prov,usage,dto));
+        usage.setProvender(prov);
+        usage.setFishInPond(stock.getStockRemaining());
+       
         FeedUsage updated = feedUsageRepo.save(usage);
         return toDto(updated);
     }
 
-    /**
+    private double ProvQtyOnUpdate(Provender prov, FeedUsage usage, FeedUsageDto dto) {
+    	double updatedQty = usage.getQuantityUsed() - dto.getQuantityUsed();
+		return prov.getQuantity() - updatedQty;
+	}
+
+	/**
      * Delete a feed usage record.
+     * TODO : revert provender usage and fish stock update
      */
     @Transactional
     public void delete(Long id) {

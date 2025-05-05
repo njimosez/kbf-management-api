@@ -70,6 +70,38 @@ public class ProbioticService {
 	        Probiotic saved = repo.save(pa);
 	        return toDto(saved);
 	    }
+	    
+	    @Transactional
+	    public Probiotic createFromTransaction(ProbioticDto dto) {
+	        Probiotic pa = new Probiotic();
+	        if (dto.getPondId() != null) {
+	            Pond pond = pondRepo.findById(dto.getPondId())
+	                .orElseThrow(() -> new IllegalArgumentException("Pond not found: " + dto.getPondId()));
+	            pa.setPond(pond);
+	        }
+	        if (dto.getFishStockId() != null) {
+	            FishStock fs = fishStockRepo.findById(dto.getFishStockId())
+	                .orElseThrow(() -> new IllegalArgumentException("FishStock not found: " + dto.getFishStockId()));
+	            pa.setFishStock(fs);
+	        }
+	        Supplier supplier = supplierRepo.findById(dto.getSupplierId())
+	            .orElseThrow(() -> new IllegalArgumentException("Supplier not found: " + dto.getSupplierId()));
+	        pa.setSupplier(supplier);
+
+	        pa.setApplicationDate(dto.getApplicationDate());
+	        pa.setProbioticName(dto.getProbioticName());
+	        pa.setPurpose(dto.getPurpose());
+	        pa.setMethod(dto.getMethod());
+	        pa.setQuantity(dto.getQuantity());
+	        pa.setUnit(dto.getUnit());
+	        pa.setConcentration(dto.getConcentration());
+	        pa.setManufactureDate(dto.getManufactureDate());
+	        pa.setExpiryDate(dto.getExpiryDate());
+	        pa.setUsageInstructions(dto.getUsageInstructions());
+	        pa.setRemarks(dto.getRemarks());
+	        
+	        return repo.save(pa);
+	    }
 
 	    @Transactional
 	    public ProbioticDto update(Long id, ProbioticDto dto) {

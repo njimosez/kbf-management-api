@@ -111,4 +111,20 @@ public class PayrollService {
         );
         return dto;
     }
+    
+    @Transactional
+    public Payroll createFromTransaction(PayrollDto dto) {
+        Payroll p = new Payroll();
+        Personnel per = personnelRepo.findById(dto.getPersonnelId())
+            .orElseThrow(() -> new IllegalArgumentException("Personnel not found: " + dto.getPersonnelId()));
+        p.setPersonnel(per);
+        p.setBaseSalary(dto.getBaseSalary());
+        p.setBonus(dto.getBonus());
+        p.setDeduction(dto.getDeduction());
+        p.setNetPay(dto.getNetPay());
+        p.setPaymentDate(dto.getPaymentDate());
+        p.setPaymentMethod(dto.getPaymentMethod());
+       
+        return payrollRepo.save(p);
+    }
 }

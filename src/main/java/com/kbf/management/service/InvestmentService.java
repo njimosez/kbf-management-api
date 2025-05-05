@@ -44,6 +44,16 @@ public class InvestmentService {
         inv.setAccumulatedDepreciation(BigDecimal.ZERO);
         return investmentRepo.save(inv);
     }
+    
+    /**
+     * Create a new investment record from transaction.
+     */
+    @Transactional
+    public Investment createFromTransaction(InvestmentDto dto) {
+        Investment inv = mapDtoToEntity(new Investment(), dto);
+        inv.setAccumulatedDepreciation(BigDecimal.ZERO);
+        return investmentRepo.save(inv);
+    }
 
     /**
      * Update an existing investment record.

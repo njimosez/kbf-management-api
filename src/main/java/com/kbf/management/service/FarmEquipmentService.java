@@ -64,6 +64,22 @@ public class FarmEquipmentService {
         FarmEquipment saved = equipmentRepo.save(eq);
         return toDto(saved);
     }
+    
+    @Transactional
+    public FarmEquipment createfromTransaction(FarmEquipmentDto dto) {
+        FarmEquipment eq = new FarmEquipment();
+        eq.setName(dto.getName());
+        eq.setEquipmentType(dto.getEquipmentType());
+        eq.setManufacturer(dto.getManufacturer());
+        eq.setQty(dto.getQty());
+        eq.setPurchaseDate(dto.getPurchaseDate());
+        eq.setCost(dto.getCost());
+        eq.setMaintenanceSchedule(dto.getMaintenanceSchedule());
+        eq.setLocation(dto.getLocation());
+        eq.setStatus(dto.getStatus());      
+        
+        return equipmentRepo.save(eq);
+    }
 
     @Transactional
     public FarmEquipmentDto update(Long id, FarmEquipmentDto dto) {

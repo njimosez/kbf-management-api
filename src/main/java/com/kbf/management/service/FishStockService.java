@@ -4,6 +4,7 @@
 package com.kbf.management.service;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,14 +67,14 @@ public class FishStockService {
 
         // Update fields
         existing.setInitialStock(dto.getInitialStock());
-        existing.setStockRemaining(dto.getStockRemaining());
-        existing.setQtySold(dto.getQtySold());
-        existing.setMortality(dto.getMortality());
-        existing.setReduction(dto.getReduction());
-        existing.setSoldOut(dto.getStockRemaining()<= Constants.ZERO ?true:false);
-        existing.setStage(dto.getStage());
-        existing.setDateAdded(dto.getDateAdded());
-        existing.setBatch(dto.getBatch());
+//        existing.setStockRemaining(dto.getStockRemaining());
+//        existing.setQtySold(dto.getQtySold());
+//        existing.setMortality(dto.getMortality());
+//        existing.setReduction(dto.getReduction());
+//        existing.setSoldOut(dto.getStockRemaining()<= Constants.ZERO ?true:false);
+//        existing.setStage(dto.getStage()); // should be automatically updated based on duration with a progress bar .best to do on fron end
+//        existing.setDateAdded(dto.getDateAdded() );//dto.getDate() != null ? dto.getDate() : LocalDate.now()
+//        existing.setBatch(dto.getBatch());
 
         if (!existing.getPond().getPondId().equals(dto.getPondId())) {
             var pond = pondRepo.findById(dto.getPondId())
@@ -101,12 +102,12 @@ public class FishStockService {
     private FishStock toEntity(FishStockDto dto) {
         FishStock stock = new FishStock();
         stock.setInitialStock(dto.getInitialStock());
-        stock.setStockRemaining(dto.getStockRemaining());
-        stock.setQtySold(dto.getQtySold());
-        stock.setMortality(dto.getMortality());
-        stock.setReduction(dto.getReduction());
-        stock.setSoldOut(dto.isSoldOut());
-        stock.setStage(dto.getStage());
+        stock.setStockRemaining(dto.getInitialStock());
+//        stock.setQtySold(dto.getQtySold());
+//        stock.setMortality(dto.getMortality());
+//        stock.setReduction(dto.getReduction());
+//        stock.setSoldOut(dto.isSoldOut());
+//        stock.setStage(dto.getStage());
         stock.setDateAdded(dto.getDateAdded());
         stock.setBatch(dto.getBatch());
 
@@ -122,12 +123,12 @@ public class FishStockService {
     private FishStockDto toDto(FishStock stock) {
         FishStockDto dto = new FishStockDto();
         dto.setInitialStock(stock.getInitialStock());
-        dto.setStockRemaining(stock.getStockRemaining());
-        dto.setQtySold(stock.getQtySold());
-        dto.setMortality(stock.getMortality());
-        dto.setReduction(stock.getReduction());
-        dto.setSoldOut(stock.isSoldOut());
-        dto.setStage(stock.getStage());
+//        dto.setStockRemaining(stock.getStockRemaining());
+//        dto.setQtySold(stock.getQtySold());
+//        dto.setMortality(stock.getMortality());
+//        dto.setReduction(stock.getReduction());
+//        dto.setSoldOut(stock.isSoldOut());
+//        dto.setStage(stock.getStage());
         dto.setDateAdded(stock.getDateAdded());
         dto.setBatch(stock.getBatch());
         dto.setPondId(stock.getPond().getPondId());

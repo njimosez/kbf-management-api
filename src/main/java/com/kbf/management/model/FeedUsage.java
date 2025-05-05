@@ -41,13 +41,13 @@ public class FeedUsage {
     @Column(nullable = false)
     private double quantityUsed;
     
-	@Column(columnDefinition = "integer default 0")
+    @Column(nullable = false)
 	private double avgFishSize;
 	@Column(columnDefinition = "integer default 0")
 	private int pelletSize;
 	@Column(columnDefinition = "integer default 2")
 	private int timesFed;
-	@Column(columnDefinition = "integer default 0")
+	@Column(nullable = false)
 	private int fishInPond;
 	 /** Number of fish removed from the pond on this day */
 	@Column(columnDefinition = "integer default 0")

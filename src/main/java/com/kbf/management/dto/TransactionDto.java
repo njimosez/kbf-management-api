@@ -22,9 +22,9 @@ import lombok.Data;
 @Schema(description = "Data transfer object for creating or updating a Transaction")
 public class TransactionDto {
 
-    @NotBlank
-    @Schema(description = "Type of transaction", example = "SALE")
-    private String type;
+//    @NotBlank
+//    @Schema(description = "Type of transaction", example = "SALE")
+//    private String type;
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
@@ -73,20 +73,32 @@ public class TransactionDto {
     @Positive
     @Schema(description = "ID of the Payroll record (if categoryType = PAYROLL)", example = "3")
     private Long payrollId;
+    
+    @Schema(description = "Payroll data object for the transaction")
+    private PayrollDto payrollDto;
 
     @Positive
     @Schema(description = "ID of the ProbioticApplication (if categoryType = PROBIOTIC)", example = "4")
     private Long probioticId;
+    
+    private ProbioticDto probioticDto;
 
     @Positive
     @Schema(description = "ID of the FarmEquipment (if categoryType = FARM_EQUIPMENT)", example = "5")
     private Long equipmentId;
     
+    private FarmEquipmentDto farmEquipmentDto;
+    
     @Positive
     @Schema(description = "ID of the Customer (if categoryType = CUSTOMER)", example = "10")
     private Long customerId;
     
+    private ProvenderDto provenderDto;
+    
     @Positive
     @Schema(description = "ID of the capital investment", example = "10")
     private Long investmentId;
+    
+    private InvestmentDto InvestmentDto;
+    
 }

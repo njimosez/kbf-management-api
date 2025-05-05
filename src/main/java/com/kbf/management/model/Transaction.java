@@ -35,9 +35,9 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Enumerated(EnumType.STRING)
+    
     @Column(nullable = false)
-    private TransactionType transType;
+    private String transType;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
