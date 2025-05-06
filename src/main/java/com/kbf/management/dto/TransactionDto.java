@@ -5,14 +5,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.kbf.management.model.OperationType;
-import com.kbf.management.model.TransactionType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -22,9 +17,12 @@ import lombok.Data;
 @Schema(description = "Data transfer object for creating or updating a Transaction")
 public class TransactionDto {
 
-    @NotBlank
-    @Schema(description = "Type of transaction", example = "SALE")
-    private String type;
+//    @NotBlank
+//    @Schema(description = "Type of transaction", example = "SALE")
+//    private String type;
+	
+	@Schema(description = "Transaction ID", example = "1")
+    private Long id;
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
@@ -40,20 +38,18 @@ public class TransactionDto {
     @Schema(description = "Date of the transaction (defaults to today if omitted)", example = "2025-05-02")
     private LocalDate date;
     
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransactionType transactionType;
-
+    @Schema(description = "Which type entity this transaction is related to" , example = "INCOME or EXPENSES")
+    private String transactionType;
+    
+    private String categoryType;
+     // This should be moved to the respective dtos
      private int soldQty; 
      private int qtyInKg;
      private int qtyPurchased; //in kg for provender and probiotic
      private int unitPrice;
      private int charges ; // transport, tax...
     
-   
-   // private CategoryType catType;
-
+ 
 
     @NotNull
     @Schema(
@@ -73,20 +69,34 @@ public class TransactionDto {
     @Positive
     @Schema(description = "ID of the Payroll record (if categoryType = PAYROLL)", example = "3")
     private Long payrollId;
+    
+    @Schema(description = "Payroll data object for the transaction")
+    private PayrollDto payrollDto;
 
     @Positive
     @Schema(description = "ID of the ProbioticApplication (if categoryType = PROBIOTIC)", example = "4")
     private Long probioticId;
+    
+    private ProbioticDto probioticDto;
 
     @Positive
     @Schema(description = "ID of the FarmEquipment (if categoryType = FARM_EQUIPMENT)", example = "5")
     private Long equipmentId;
     
+    private FarmEquipmentDto farmEquipmentDto;
+    
     @Positive
     @Schema(description = "ID of the Customer (if categoryType = CUSTOMER)", example = "10")
     private Long customerId;
     
+    private ProvenderDto provenderDto;
+    
     @Positive
     @Schema(description = "ID of the capital investment", example = "10")
     private Long investmentId;
+    
+    private InvestmentDto InvestmentDto;
+
+	
+    
 }

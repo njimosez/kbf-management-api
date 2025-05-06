@@ -72,8 +72,8 @@ public class SupplierService {
         dto.setAddress(s.getAddress());
         dto.setEmail(s.getEmail());
         dto.setPhone(s.getPhone());
-        dto.setProvenderIds(s.getProvenders().stream().map(p -> p.getProvenderId()).collect(Collectors.toList()));
-        dto.setProbioticApplicationIds(s.getProbiotics().stream().map(pa -> pa.getProbioticId()).collect(Collectors.toList()));       
+       // dto.setProvenderIds(s.getProvenders().stream().map(p -> p.getProvenderId()).collect(Collectors.toList()));
+      //  dto.setProbioticApplicationIds(s.getProbiotics().stream().map(pa -> pa.getProbioticId()).collect(Collectors.toList()));       
         return dto;
     }
 }

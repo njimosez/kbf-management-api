@@ -1,7 +1,11 @@
 package com.kbf.management.service;
 
 
-import lombok.RequiredArgsConstructor;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,10 +13,7 @@ import com.kbf.management.dto.InvestmentDto;
 import com.kbf.management.model.Investment;
 import com.kbf.management.repository.InvestmentRepository;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,16 @@ public class InvestmentService {
      */
     @Transactional
     public Investment create(InvestmentDto dto) {
+        Investment inv = mapDtoToEntity(new Investment(), dto);
+        inv.setAccumulatedDepreciation(BigDecimal.ZERO);
+        return investmentRepo.save(inv);
+    }
+    
+    /**
+     * Create a new investment record from transaction.
+     */
+    @Transactional
+    public Investment createFromTransaction(InvestmentDto dto) {
         Investment inv = mapDtoToEntity(new Investment(), dto);
         inv.setAccumulatedDepreciation(BigDecimal.ZERO);
         return investmentRepo.save(inv);

@@ -16,7 +16,8 @@ import com.kbf.management.service.IngredientService;
 
 import java.util.List;
 
-@Tag(name = "Ingredient API")
+
+@Tag(name = "Ingredient", description = "Ingredient API")
 @RestController
 @RequestMapping("/api/ingredients")
 public class IngredientController {

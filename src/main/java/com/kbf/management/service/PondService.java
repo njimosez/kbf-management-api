@@ -60,6 +60,7 @@ public class PondService {
 
     private PondDto toDto(Pond pond) {
         PondDto dto = new PondDto();
+        dto.setPondId(pond.getPondId());
         dto.setName(pond.getName());
         dto.setSize(pond.getSize());
         dto.setLocation(pond.getLocation());
@@ -69,10 +70,11 @@ public class PondService {
     }
 
     private Pond toEntity(PondDto dto) {
-        Pond pond = new Pond();
+        Pond pond = new Pond();       
         pond.setName(dto.getName());
         pond.setSize(dto.getSize());
         pond.setLocation(dto.getLocation());
+        //check if pond not active cannot put fish stock
         pond.setStatus(dto.getStatus());
         pond.setFishCapacity(dto.getFishCapacity());
         return pond;

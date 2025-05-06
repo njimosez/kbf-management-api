@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Veterinary API")
+@Tag(name = "Vet Care", description = "Vet Care API")
 @RestController
 @RequestMapping("/kbf/veterinary")
 @Validated

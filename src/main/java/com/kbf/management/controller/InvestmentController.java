@@ -20,9 +20,11 @@ import com.kbf.management.service.InvestmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Investment", description = "Investment API")
 @RestController
 @RequestMapping("/api/investments")
 @Validated

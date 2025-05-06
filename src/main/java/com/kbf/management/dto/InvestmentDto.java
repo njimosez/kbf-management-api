@@ -1,16 +1,16 @@
 package com.kbf.management.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.kbf.management.model.Investment.DepreciationMethod;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import com.kbf.management.model.Investment.DepreciationMethod;
 
 @Data
 @Schema(description = "Data transfer object for recording a capital investment (asset purchase)")

@@ -33,11 +33,11 @@ public class SampleDto {
 	    private double totalSampleWeight;
 
 	    @PositiveOrZero
-	    @Schema(description = "Average size of sampled fish in cm", example = "25.0")
+	    @Schema(description = "Average size of sampled fish in grams", example = "25.0")
 	    private double avgFishSize;
 
 	    @PositiveOrZero
-	    @Schema(description = "Target fish size in cm", example = "30.0")
+	    @Schema(description = "Target fish size in grams", example = "30.0")
 	    private double targetSize;
 
 	    @NotNull

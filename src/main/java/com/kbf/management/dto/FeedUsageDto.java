@@ -20,10 +20,19 @@ public class FeedUsageDto {
     @NotBlank
     @Schema(description = "Type of feed used (e.g., Starter, Grower)", example = "Starter Feed")
     private String feedType;
-
+    
+    @PositiveOrZero
+    @Schema(description = "Number of times feed was given per day", example = "2")
+    private int timesFed;
+    
+    
     @PositiveOrZero
     @Schema(description = "Quantity of feed used in kg", example = "2.5")
     private double quantityUsed;
+    
+    @PositiveOrZero
+    @Schema(description = "Average size of sampled fish in grams", example = "25.0")
+    private double avgFishSize;
 
     @NotNull
     @Schema(description = "Date when feed was applied", example = "2025-05-04")

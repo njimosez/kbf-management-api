@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +36,9 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Enumerated(EnumType.STRING)
+    
     @Column(nullable = false)
-    private TransactionType transType;
+    private String transType;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -86,12 +87,11 @@ public class Transaction {
      * NEW: purchase of equipment
      */
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipmentId")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "purchaseTransaction")    
     private FarmEquipment farmEquipment;
     
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipmentId")
+    @JoinColumn(name = "investmentId")
     private Investment investment;
 }

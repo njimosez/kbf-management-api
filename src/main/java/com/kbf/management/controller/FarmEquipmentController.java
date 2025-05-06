@@ -21,7 +21,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Farm Equipment API")
+
+@Tag(name = "Farm Equipment", description = "Farm Equipment API")
 @RestController
 @RequestMapping("/kbf/farm-equipments")
 @RequiredArgsConstructor

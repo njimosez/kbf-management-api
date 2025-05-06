@@ -1,7 +1,9 @@
 package com.kbf.management.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.kbf.management.dto.ProvenderDto;
@@ -13,10 +15,6 @@ import com.kbf.management.repository.SupplierRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -143,4 +141,40 @@ public class ProvenderService {
 //        }
         return dto;
     }
+    
+    @Transactional
+    public Provender createFromTransaction(ProvenderDto dto) {
+        Supplier supplier = supplierRepo.findById(dto.getSupplierId())
+            .orElseThrow(() -> new IllegalArgumentException("Supplier not found: " + dto.getSupplierId()));
+
+        Provender p = new Provender();
+        p.setFeedType(dto.getFeedType());
+        p.setQuantity(dto.getQuantity());
+        p.setLastRestocked(dto.getLastRestocked());
+        p.setPricePerKg(dto.getPricePerKg());
+        p.setExpiryDate(dto.getExpiryDate());
+        p.setFeedingNotes(dto.getFeedingNotes());
+        p.setManufacturer(dto.getManufacturer());
+        p.setSupplier(supplier);
+
+        // map compositions
+        if (dto.getFeedCompositions() != null) {
+            List<FeedComposition> comps = dto.getFeedCompositions().stream().map(c -> {
+                FeedComposition fc = new FeedComposition();
+               // fc.setIngredient(c.getIngredientId())
+                fc.setPercentage(c.getPercentage());
+                fc.setProtein(c.getProtein());
+                fc.setFat(c.getFat());
+                fc.setFiber(c.getFiber());
+                fc.setEnergy(c.getEnergy());
+                fc.setProvender(p);
+                return fc;
+            }).collect(Collectors.toList());
+            p.setFeedCompositions(comps);
+        }
+
+        Provender saved = provenderRepo.save(p);
+        return saved;
+    }
+
 }

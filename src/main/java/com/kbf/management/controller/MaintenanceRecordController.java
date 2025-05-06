@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kbf.management.dto.FarmEquipmentDto;
 import com.kbf.management.dto.MaintenanceRecordDto;
-import com.kbf.management.service.FarmEquipmentService;
 import com.kbf.management.service.MaintenanceRecordService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +23,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Farm Equipment API")
+@Tag(name = "Maintenance", description = "MaintenanceRecord API")
+@RestController
 @RequestMapping("/kbf/maintenance-records")
 @Validated
 @RequiredArgsConstructor

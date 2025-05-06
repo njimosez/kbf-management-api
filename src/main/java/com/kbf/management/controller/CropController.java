@@ -15,7 +15,8 @@ import com.kbf.management.service.CropService;
 
 import java.util.List;
 
-@Tag(name = "Crop API")
+
+@Tag(name = "Crop", description = "Crop API")
 @RestController
 @RequestMapping("/api/crops")
 public class CropController {
