@@ -5,14 +5,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.kbf.management.model.OperationType;
-import com.kbf.management.model.TransactionType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -25,6 +20,9 @@ public class TransactionDto {
 //    @NotBlank
 //    @Schema(description = "Type of transaction", example = "SALE")
 //    private String type;
+	
+	@Schema(description = "Transaction ID", example = "1")
+    private Long id;
 
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
@@ -40,20 +38,18 @@ public class TransactionDto {
     @Schema(description = "Date of the transaction (defaults to today if omitted)", example = "2025-05-02")
     private LocalDate date;
     
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransactionType transactionType;
-
+    @Schema(description = "Which type entity this transaction is related to" , example = "INCOME or EXPENSES")
+    private String transactionType;
+    
+    private String categoryType;
+     // This should be moved to the respective dtos
      private int soldQty; 
      private int qtyInKg;
      private int qtyPurchased; //in kg for provender and probiotic
      private int unitPrice;
      private int charges ; // transport, tax...
     
-   
-   // private CategoryType catType;
-
+ 
 
     @NotNull
     @Schema(
@@ -100,5 +96,7 @@ public class TransactionDto {
     private Long investmentId;
     
     private InvestmentDto InvestmentDto;
+
+	
     
 }

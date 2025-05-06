@@ -71,13 +71,15 @@ public class Investment {
      * Link any financial transaction(s) that funded this purchase.
      * Transaction.relatedEntityType = CAPITAL_INVESTMENT
      */
-    @OneToMany(mappedBy = "Investment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
 
     public enum DepreciationMethod {
         STRAIGHT_LINE,
         DOUBLE_DECLINING_BALANCE
     }
+    
+    
 }
 	 
 	

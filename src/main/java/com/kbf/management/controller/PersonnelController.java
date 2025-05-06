@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Personnel API")
+@Tag(name = "Personnel", description = "Personnel API")
 @RestController
 @RequestMapping("/kbf/personnel")
 @Validated

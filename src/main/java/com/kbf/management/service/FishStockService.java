@@ -4,7 +4,6 @@
 package com.kbf.management.service;
 
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +13,6 @@ import com.kbf.management.dto.FishStockDto;
 import com.kbf.management.model.FishStock;
 import com.kbf.management.repository.FishStockRepository;
 import com.kbf.management.repository.PondRepository;
-import com.kbf.management.utils.Constants;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -122,13 +120,15 @@ public class FishStockService {
      */
     private FishStockDto toDto(FishStock stock) {
         FishStockDto dto = new FishStockDto();
+        dto.setFishStockId(stock.getFishStockId());
         dto.setInitialStock(stock.getInitialStock());
-//        dto.setStockRemaining(stock.getStockRemaining());
-//        dto.setQtySold(stock.getQtySold());
-//        dto.setMortality(stock.getMortality());
-//        dto.setReduction(stock.getReduction());
-//        dto.setSoldOut(stock.isSoldOut());
-//        dto.setStage(stock.getStage());
+        
+       dto.setStockRemaining(stock.getStockRemaining());
+       dto.setQtySold(stock.getQtySold());
+        dto.setMortality(stock.getMortality());
+        dto.setReduction(stock.getReduction());
+        dto.setSoldOut(stock.isSoldOut());
+        dto.setStage(stock.getStage());
         dto.setDateAdded(stock.getDateAdded());
         dto.setBatch(stock.getBatch());
         dto.setPondId(stock.getPond().getPondId());

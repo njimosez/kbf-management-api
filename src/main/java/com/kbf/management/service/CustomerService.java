@@ -10,12 +10,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.kbf.management.dto.CustomerDto;
-import com.kbf.management.dto.SupplierDto;
 import com.kbf.management.model.Customer;
-import com.kbf.management.model.Supplier;
 import com.kbf.management.model.Transaction;
 import com.kbf.management.repository.CustomerRepository;
-import com.kbf.management.repository.SupplierRepository;
 import com.kbf.management.repository.TransactionRepository;
 
 import jakarta.transaction.Transactional;
@@ -96,9 +93,12 @@ public class CustomerService {
         dto.setAddress(c.getAddress());
         dto.setEmail(c.getEmail());
         dto.setPhone(c.getPhone());
-        dto.setTransactionIds(
-            c.getTransactions().stream().map(Transaction::getTransactionId).collect(Collectors.toList())
-        );
+        if (dto.getTransactionIds() != null) {
+        	  dto.setTransactionIds(
+        	            c.getTransactions().stream().map(Transaction::getTransactionId).collect(Collectors.toList())
+        	 );
+        }
+      
         return dto;
     }
 }

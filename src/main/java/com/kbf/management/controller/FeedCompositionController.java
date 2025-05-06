@@ -24,7 +24,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "FeedComposition API")
+
+@Tag(name = "FeedComposition", description = "FeedComposition API")
 @RestController
 @RequestMapping("/kbf/feedcompositions")
 @Validated

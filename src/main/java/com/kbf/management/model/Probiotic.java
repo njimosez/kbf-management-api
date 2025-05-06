@@ -4,7 +4,6 @@ package com.kbf.management.model;
 import java.time.LocalDate;
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -70,11 +69,11 @@ public class Probiotic {
     private String remarks;
 
     /** Associated water treatments using this probiotic */
-    @OneToMany(mappedBy = "probioticApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "probiotic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WaterTreatment> waterTreatments;
 
     /** Financial transactions related to this probiotic purchase */
-    @OneToMany(mappedBy = "probioticApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "probiotic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
     
     /** Pond to which this probiotic was applied (optional) */

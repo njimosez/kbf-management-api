@@ -11,6 +11,9 @@ import lombok.Data;
 @Schema(description = "Data transfer object for Pond")
 public class PondDto {
 	
+	@Schema(description = "ID of the pond where this stock resides", example = "1")
+    private Long pondId;
+	
 	@NotBlank
     @Schema(description = "Name of the pond", example = "Pond A")
     private String name;

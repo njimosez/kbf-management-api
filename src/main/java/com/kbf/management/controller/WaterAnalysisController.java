@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "WaterAnalysis API")
+@Tag(name = "Water Analysis", description = "H2O Analysis API")
 @RestController
 @RequestMapping("/kbf/water-analysis")
 @Validated
